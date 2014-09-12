@@ -343,6 +343,26 @@ var _ = {};
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+
+    var previousArgs = [];
+    var previousResults = [];
+    var result;
+
+    return function(){
+      var args = Array.prototype.slice.call(arguments)[0]; //obviously, this will only work with the
+                                                          //primitive params as above
+      if (previousArgs.indexOf(args) === -1){
+          result = func.apply(this, arguments);
+          previousArgs.push(args);
+          previousResults.push(result);
+      }else{
+          var index = previousArgs.indexOf(args);
+          result = previousResults[index];
+      }
+      return result;
+    };
+
+
   };
 
   // Delays a function for the given number of milliseconds, and then calls

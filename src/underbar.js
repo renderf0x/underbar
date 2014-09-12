@@ -225,15 +225,13 @@ var _ = {};
       iterator = _.identity;
     }
 
-    var returnValue = _.reduce(collection, function(passedTest, item){
+    return Boolean(_.reduce(collection, function(passedTest, item){
       if (!passedTest){
         return false;
       }
       return iterator(item);
 
-    }, true);
-
-    return Boolean(returnValue);
+    }, true));
 
   };
 

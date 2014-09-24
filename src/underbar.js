@@ -457,6 +457,29 @@ var _ = {};
   //
   // See the Underbar readme for details.
   _.throttle = function(func, wait) {
+
+      var firstRun = true;
+      var lastRun = Date.now();
+
+      return function(){
+        if (firstRun){
+          console.log("hitting first run");
+          firstRun = false;
+          func.apply(this, arguments);
+        }else{
+          console.log("executing normal block")
+          var dateNow = Date.now();
+          if((dateNow - lastRun) >= wait){
+            lastRun = Date.now();
+            func.apply(this, arguments);
+          }else{
+            console.log("Skipping runtime for function");
+          }
+        }
+
+      };
+
+
   };
 
 }).call(this);

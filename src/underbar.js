@@ -508,6 +508,27 @@ var _ = {};
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+
+    var results = []; //test cond. is _.difference([1, 2, 3, 4], [2, 30, 40], [1, 11, 111])
+
+    for (var i = 0; i < arguments[0].length; i++){ //copied from above, just changing the test
+      var testValue = arguments[0][i];
+      var isCommon = false;
+
+      for (var j = 1; j < arguments.length; j++){
+        if (_.indexOf(arguments[j], testValue) > -1){
+          isCommon = true;
+        }
+      }
+
+      //console.log("isCommon is " + isCommon + " for " + testValue);
+      if (!isCommon){
+        results.push(testValue);
+      }
+    }
+
+    return results;
+
   };
 
 

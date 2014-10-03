@@ -419,6 +419,27 @@ var _ = {};
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+
+    var results = collection.slice(0);
+
+    console.log('Results at start equal: ' + JSON.stringify(results));
+
+    for (var i = 0; i < results.length; i++){
+      var testValue = results[i][iterator];
+      console.log('testValue set at: ' + testValue);
+      for (var j = i + 1; j < results.length; j++){
+        var compareValue = results[j][iterator];
+        if(testValue > compareValue){
+          console.log(testValue + ' tested as larger than ' + compareValue );
+          var temp = results[i];
+          results[i] = results[j];
+          results[j] = temp;
+        }
+      }
+    }
+ 
+    return results;
+
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -543,27 +564,28 @@ var _ = {};
   // See the Underbar readme for details.
   _.throttle = function(func, wait) {
 
-      var firstRun = true;
-      var lastRun = Date.now();
+    var previous = null;
+    var timer = null;
+    var returnValue;
 
-      return function(){
-        if (firstRun){
-          console.log("hitting first run");
-          firstRun = false;
-          func.apply(this, arguments);
-        }else{
-          console.log("executing normal block")
-          var dateNow = Date.now();
-          if((dateNow - lastRun) >= wait){
-            lastRun = Date.now();
-            func.apply(this, arguments);
-          }else{
-            console.log("Skipping runtime for function");
-          }
-        }
+    return function(){
+      if (!timer && !previous){ //means that it's the first time
+        previous = Date.now();
+        returnValue = func.apply(this, arguments);
+      }else if (!timer && (wait - (Date.now() - previous)) <= 0){ //timer has run down
+        returnValue = func.apply(this, arguments);
+        previous = Date.now();
+      }else if ((wait - (Date.now() - previous)) > 0){ //other timer-y stuff
+        if(timer) clearTimeout(timer);
+        var remaining = wait - (Date.now() - previous);
+        timer = setTimeout(function(){
+          returnValue = func.apply(this, arguments);
+          previous = Date.now();
+        }, remaining);
 
-      };
-
+      }
+      return returnValue;
+    };
 
   };
 
